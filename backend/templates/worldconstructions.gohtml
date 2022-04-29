@@ -1,9 +1,9 @@
-{{template "layout.html" .}}
+{{template "layout.gohtml" .}}
 
-{{define "title"}}Sites{{end}}
+{{define "title"}}World Constructions{{end}}
 
 {{define "content"}}
-<h3>Sites</h3>
+<h3>World Constructions</h3>
 
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -23,7 +23,7 @@
             </tr>
             {{- range $v }}{{- if not (eq .Name "") }}
             <tr>
-                <td>{{ site .Id }}</td>
+                <td>{{ worldconstruction .Id }}</td>
                 <td></td>
             </tr>
             {{- end}}{{- end}}

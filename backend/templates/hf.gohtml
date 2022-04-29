@@ -1,4 +1,4 @@
-{{template "layout.html" .}}
+{{template "layout.gohtml" .}}
 
 {{define "title"}}{{ title .Name }}{{end}}
 
@@ -48,6 +48,6 @@
 
 <h3>Events</h3>
 
-{{ template "events.html" events . }}
+{{ template "events.gohtml" events . }}
 
 {{ json . }}

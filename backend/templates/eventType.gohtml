@@ -1,9 +1,9 @@
-{{template "layout.html" .}}
+{{template "layout.gohtml" .}}
 
 {{define "title"}}{{ title .Type }}{{end}}
 
 {{define "content"}}
 
-{{ template "events.html" events .Events }}
+{{ template "events.gohtml" events .Events }}
 
 {{- end }}

@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-//go:embed *.html
+//go:embed *.gohtml
 var templateFS embed.FS
 
 type Template struct {
@@ -15,7 +15,7 @@ type Template struct {
 }
 
 func New(funcMap template.FuncMap) *Template {
-	templates := template.Must(template.New("").Funcs(funcMap).ParseFS(templateFS, "*.html"))
+	templates := template.Must(template.New("").Funcs(funcMap).ParseFS(templateFS, "*.gohtml"))
 	return &Template{
 		funcMap:   funcMap,
 		templates: templates,
@@ -23,7 +23,7 @@ func New(funcMap template.FuncMap) *Template {
 }
 
 func NewDebug(funcMap template.FuncMap) *Template {
-	ts := template.Must(template.New("").Funcs(funcMap).ParseGlob("templates/*.html"))
+	ts := template.Must(template.New("").Funcs(funcMap).ParseGlob("templates/*.gohtml"))
 	return &Template{
 		funcMap:   funcMap,
 		templates: ts,

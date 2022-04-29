@@ -45,22 +45,22 @@ func StartServer(world *model.DfWorld, static embed.FS) {
 	srv.loader = &loadHandler{server: srv}
 	srv.LoadTemplates()
 
-	srv.RegisterWorldPage("/entities", "entities.html", func(p Parms) any { return grouped(srv.context.world.Entities) })
-	srv.RegisterWorldResourcePage("/entity/{id}", "entity.html", func(id int) any { return srv.context.world.Entities[id] })
+	srv.RegisterWorldPage("/entities", "entities.gohtml", func(p Parms) any { return grouped(srv.context.world.Entities) })
+	srv.RegisterWorldResourcePage("/entity/{id}", "entity.gohtml", func(id int) any { return srv.context.world.Entities[id] })
 
-	srv.RegisterWorldPage("/regions", "regions.html", func(p Parms) any { return grouped(srv.context.world.Regions) })
-	srv.RegisterWorldResourcePage("/region/{id}", "region.html", func(id int) any { return srv.context.world.Regions[id] })
+	srv.RegisterWorldPage("/regions", "regions.gohtml", func(p Parms) any { return grouped(srv.context.world.Regions) })
+	srv.RegisterWorldResourcePage("/region/{id}", "region.gohtml", func(id int) any { return srv.context.world.Regions[id] })
 
-	srv.RegisterWorldPage("/sites", "sites.html", func(p Parms) any { return grouped(srv.context.world.Sites) })
-	srv.RegisterWorldResourcePage("/site/{id}", "site.html", func(id int) any { return srv.context.world.Sites[id] })
+	srv.RegisterWorldPage("/sites", "sites.gohtml", func(p Parms) any { return grouped(srv.context.world.Sites) })
+	srv.RegisterWorldResourcePage("/site/{id}", "site.gohtml", func(id int) any { return srv.context.world.Sites[id] })
 
-	srv.RegisterWorldPage("/worldconstructions", "worldconstructions.html", func(p Parms) any { return grouped(srv.context.world.WorldConstructions) })
-	srv.RegisterWorldResourcePage("/worldconstruction/{id}", "worldconstruction.html", func(id int) any { return srv.context.world.WorldConstructions[id] })
+	srv.RegisterWorldPage("/worldconstructions", "worldconstructions.gohtml", func(p Parms) any { return grouped(srv.context.world.WorldConstructions) })
+	srv.RegisterWorldResourcePage("/worldconstruction/{id}", "worldconstruction.gohtml", func(id int) any { return srv.context.world.WorldConstructions[id] })
 
-	srv.RegisterWorldPage("/artifacts", "artifacts.html", func(p Parms) any { return grouped(srv.context.world.Artifacts) })
-	srv.RegisterWorldResourcePage("/artifact/{id}", "artifact.html", func(id int) any { return srv.context.world.Artifacts[id] })
+	srv.RegisterWorldPage("/artifacts", "artifacts.gohtml", func(p Parms) any { return grouped(srv.context.world.Artifacts) })
+	srv.RegisterWorldResourcePage("/artifact/{id}", "artifact.gohtml", func(id int) any { return srv.context.world.Artifacts[id] })
 
-	srv.RegisterWorldPage("/artforms", "artforms.html", func(p Parms) any {
+	srv.RegisterWorldPage("/artforms", "artforms.gohtml", func(p Parms) any {
 		return struct {
 			DanceForms   map[string][]*model.DanceForm
 			MusicalForms map[string][]*model.MusicalForm
@@ -72,18 +72,18 @@ func StartServer(world *model.DfWorld, static embed.FS) {
 		}
 	})
 
-	srv.RegisterWorldPage("/writtencontents", "writtencontents.html", func(p Parms) any { return grouped(srv.context.world.WrittenContents) })
-	srv.RegisterWorldResourcePage("/writtencontent/{id}", "writtencontent.html", func(id int) any { return srv.context.world.WrittenContents[id] })
+	srv.RegisterWorldPage("/writtencontents", "writtencontents.gohtml", func(p Parms) any { return grouped(srv.context.world.WrittenContents) })
+	srv.RegisterWorldResourcePage("/writtencontent/{id}", "writtencontent.gohtml", func(id int) any { return srv.context.world.WrittenContents[id] })
 
-	srv.RegisterWorldResourcePage("/hf/{id}", "hf.html", func(id int) any { return srv.context.world.HistoricalFigures[id] })
+	srv.RegisterWorldResourcePage("/hf/{id}", "hf.gohtml", func(id int) any { return srv.context.world.HistoricalFigures[id] })
 
-	srv.RegisterWorldPage("/", "eventTypes.html", func(p Parms) any { return srv.context.world.AllEventTypes() })
-	srv.RegisterWorldPage("/events", "eventTypes.html", func(p Parms) any { return srv.context.world.AllEventTypes() })
-	srv.RegisterWorldPage("/events/{type}", "eventType.html", func(p Parms) any { return srv.context.world.EventsOfType(p["type"]) })
+	srv.RegisterWorldPage("/", "eventTypes.gohtml", func(p Parms) any { return srv.context.world.AllEventTypes() })
+	srv.RegisterWorldPage("/events", "eventTypes.gohtml", func(p Parms) any { return srv.context.world.AllEventTypes() })
+	srv.RegisterWorldPage("/events/{type}", "eventType.gohtml", func(p Parms) any { return srv.context.world.EventsOfType(p["type"]) })
 
 	srv.router.PathPrefix("/load").Handler(srv.loader)
 
-	spa := spaHandler{staticFS: static, staticPath: "static", indexPath: "index.html"}
+	spa := spaHandler{staticFS: static, staticPath: "static", indexPath: "index.gohtml"}
 	srv.router.PathPrefix("/").Handler(spa)
 
 	OpenBrowser("http://localhost:8080")
@@ -111,7 +111,7 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	_, err := h.staticFS.Open(path)
 	if os.IsNotExist(err) {
-		// file does not exist, serve index.html
+		// file does not exist, serve index.gohtml
 		fmt.Println(path)
 		index, err := h.staticFS.ReadFile(h.staticPath + "/" + h.indexPath)
 		if err != nil {
@@ -203,7 +203,7 @@ func (h loadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			err = h.server.templates.Render(w, "load.html", p)
+			err = h.server.templates.Render(w, "load.gohtml", p)
 			if err != nil {
 				httpError(w, err)
 			}
@@ -238,7 +238,7 @@ type paths struct {
 
 func (srv *DfServer) renderLoading(w http.ResponseWriter, r *http.Request) {
 	if srv.context.isLoading {
-		err := srv.templates.Render(w, "loading.html", srv.loader.Progress())
+		err := srv.templates.Render(w, "loading.gohtml", srv.loader.Progress())
 		if err != nil {
 			httpError(w, err)
 		}
